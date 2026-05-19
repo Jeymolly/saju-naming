@@ -1,0 +1,526 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Noto+Serif+KR:wght@300;400;600&family=Outfit:wght@300;400;500;600&display=swap');
+
+:root {
+    --primary-color: #E6D5B8;
+    --secondary-color: #D4A373;
+    --bg-color: #FAEDCD;
+    --text-main: #4A4036;
+    --text-light: #8B7E74;
+    --white: #FFFFFF;
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.5);
+    
+    --gold: #FFD700;
+    --silver: #C0C0C0;
+    --bronze: #CD7F32;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Outfit', 'Pretendard', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow-x: hidden;
+}
+
+h1, h2, h3, .pronunciation {
+    font-family: 'Cormorant Garamond', serif;
+}
+
+.korean-name {
+    font-family: 'Noto Serif KR', serif;
+}
+
+.background-elements {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.circle {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.6;
+}
+
+.circle-1 {
+    width: 400px; height: 400px;
+    background: #FEFAE0;
+    top: -100px; left: -100px;
+}
+
+.circle-2 {
+    width: 500px; height: 500px;
+    background: #F4A261;
+    opacity: 0.2;
+    bottom: -150px; right: -100px;
+}
+
+.container {
+    width: 100%;
+    max-width: 550px;
+    padding: 20px;
+    z-index: 1;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    color: var(--text-main);
+    margin-bottom: 10px;
+    letter-spacing: -0.5px;
+}
+
+header p {
+    font-size: 1rem;
+    color: var(--text-light);
+    line-height: 1.5;
+}
+
+.glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 40px 30px;
+    box-shadow: 0 8px 32px rgba(139, 126, 116, 0.1);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+label {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--text-main);
+}
+
+input[type="text"],
+input[type="date"],
+input[type="time"],
+select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid rgba(212, 163, 115, 0.3);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.8);
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--text-main);
+    transition: all 0.3s ease;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 3px rgba(212, 163, 115, 0.1);
+}
+
+.radio-group {
+    display: flex;
+    gap: 10px;
+}
+
+.radio-btn {
+    flex: 1;
+    position: relative;
+    cursor: pointer;
+}
+
+.radio-btn input {
+    position: absolute;
+    opacity: 0;
+}
+
+.radio-btn span {
+    display: block;
+    text-align: center;
+    padding: 10px;
+    border: 1px solid rgba(212, 163, 115, 0.3);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.8);
+    font-size: 0.95rem;
+    transition: all 0.2s;
+}
+
+.radio-btn input:checked + span {
+    background: var(--secondary-color);
+    color: white;
+    border-color: var(--secondary-color);
+    font-weight: 500;
+}
+
+.payment-section {
+    margin-top: 30px;
+    padding-top: 25px;
+    border-top: 1px dashed rgba(212, 163, 115, 0.4);
+    text-align: center;
+}
+
+.price-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px 15px;
+    background: rgba(230, 213, 184, 0.3);
+    border-radius: 8px;
+}
+
+.price-label {
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.price-amount {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #D35400;
+}
+
+.paypal-btn {
+    width: 100%;
+    background: #FFC439;
+    color: #000;
+    border: none;
+    border-radius: 25px;
+    padding: 14px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    font-family: inherit;
+}
+
+.paypal-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.paypal-logo {
+    height: 20px;
+}
+
+.secure-text {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    margin-top: 10px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.loader {
+    text-align: center;
+    padding: 40px 0;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(212, 163, 115, 0.3);
+    border-top-color: var(--secondary-color);
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.result-content {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.result-content h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 2rem;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.saju-analysis {
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 15px;
+    border: 1px solid rgba(212, 163, 115, 0.2);
+}
+
+.saju-analysis h3 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    text-align: center;
+    color: var(--text-main);
+}
+
+.elements-chart {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 15px;
+    border-radius: 12px;
+}
+
+.element {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.9rem;
+}
+
+.element.highlight {
+    color: #D35400;
+    font-weight: bold;
+    transform: scale(1.1);
+}
+
+.element .icon {
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+}
+
+.element .count {
+    margin-top: 5px;
+    background: var(--primary-color);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    color: var(--text-main);
+    font-weight: bold;
+}
+
+.element.highlight .count {
+    background: #fAD7A1;
+    border: 2px solid #D35400;
+}
+
+.saju-desc {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-light);
+    text-align: justify;
+}
+
+.instruction-text {
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+    font-weight: 500;
+    margin-bottom: 15px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.7; }
+    50% { opacity: 1; }
+    100% { opacity: 0.7; }
+}
+
+.name-recommendations {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.name-card {
+    background: white;
+    padding: 25px 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(139, 126, 116, 0.1);
+    position: relative;
+    border-left: 5px solid transparent;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.name-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(139, 126, 116, 0.2);
+}
+
+.rank-badge {
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    font-family: 'Outfit', sans-serif;
+}
+
+.rank-1 { border-left-color: var(--gold); }
+.rank-1 .rank-badge { color: #b8860b; border: 1px solid var(--gold); }
+
+.rank-2 { border-left-color: var(--silver); }
+.rank-2 .rank-badge { color: #708090; border: 1px solid var(--silver); }
+
+.rank-3 { border-left-color: var(--bronze); }
+.rank-3 .rank-badge { color: #8b4513; border: 1px solid var(--bronze); }
+
+.name-header {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    gap: 15px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.pronunciation {
+    font-size: 2.5rem;
+    color: var(--text-main);
+}
+
+.korean-name {
+    font-size: 1.5rem;
+    color: var(--secondary-color);
+}
+
+.hanja {
+    font-size: 1rem;
+    color: var(--text-light);
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.meaning {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-main);
+}
+
+.click-hint {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--secondary-color);
+    margin-top: 15px;
+    font-weight: 500;
+}
+
+/* Expanded Details Styles */
+.expanded-details {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px dashed rgba(212, 163, 115, 0.4);
+    animation: fadeIn 0.4s ease-out;
+}
+
+.detail-item {
+    margin-bottom: 15px;
+}
+
+.detail-item:last-child {
+    margin-bottom: 0;
+}
+
+.detail-item h4 {
+    font-size: 1rem;
+    color: var(--text-main);
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.detail-item p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--text-light);
+    padding-left: 28px;
+}
+
+.retry-btn {
+    width: 100%;
+    background: transparent;
+    border: 1px solid var(--secondary-color);
+    color: var(--secondary-color);
+    padding: 12px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 1.05rem;
+    font-weight: 500;
+    transition: all 0.3s;
+    font-family: inherit;
+}
+
+.retry-btn:hover {
+    background: var(--secondary-color);
+    color: white;
+}
+
+/* Disclaimer Box Styles */
+.disclaimer-box {
+    margin-top: 25px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(212, 163, 115, 0.4);
+    border-radius: 12px;
+    text-align: left;
+}
+
+.disclaimer-box h4 {
+    font-size: 0.9rem;
+    color: var(--text-main);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.disclaimer-box p {
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: var(--text-light);
+}
+
+.disclaimer-box strong {
+    color: var(--text-main);
+}
