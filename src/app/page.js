@@ -61,6 +61,60 @@ export default function Home() {
     setExpandedCard(expandedCard === rank ? null : rank);
   };
 
+  // Helper function to draw the SVG Life Graph
+  const renderLifeGraph = (graphData) => {
+    if (!graphData || graphData.length !== 4) return null;
+    
+    // SVG Dimensions
+    const w = 400;
+    const h = 150;
+    const padX = 40;
+    const padY = 20;
+    
+    // Calculate points
+    const points = graphData.map((d, i) => {
+      const x = padX + (i * ((w - 2 * padX) / 3));
+      // Invert Y axis (higher score = higher visually, meaning lower Y coordinate)
+      const y = h - padY - (d.score / 100) * (h - 2 * padY);
+      return { x, y, stage: d.stage, score: d.score };
+    });
+
+    // Create polyline string
+    const polylinePts = points.map(p => `${p.x},${p.y}`).join(' ');
+
+    return (
+      <div className="life-graph-container">
+        <h3>📈 Life Trajectory Graph</h3>
+        <p className="life-graph-desc">A visual representation of the baby's natural fortune flow over time.</p>
+        <svg viewBox={`0 0 ${w} ${h}`} className="life-graph-svg">
+          {/* Grid lines */}
+          <line x1={padX} y1={padY} x2={w-padX} y2={padY} stroke="#e0e0e0" strokeDasharray="4" />
+          <line x1={padX} y1={h/2} x2={w-padX} y2={h/2} stroke="#e0e0e0" strokeDasharray="4" />
+          <line x1={padX} y1={h-padY} x2={w-padX} y2={h-padY} stroke="#e0e0e0" strokeDasharray="4" />
+          
+          {/* Connecting Line */}
+          <polyline 
+            points={polylinePts}
+            fill="none" 
+            stroke="var(--secondary-color)" 
+            strokeWidth="3" 
+            strokeLinecap="round" 
+            strokeLinejoin="round" 
+          />
+          
+          {/* Data Points */}
+          {points.map((p, i) => (
+            <g key={i}>
+              <circle cx={p.x} cy={p.y} r="5" fill="var(--gold)" stroke="#fff" strokeWidth="2" />
+              <text x={p.x} y={p.y - 12} fontSize="10" textAnchor="middle" fill="var(--text-main)" fontWeight="bold">{p.score}</text>
+              <text x={p.x} y={h - 5} fontSize="10" textAnchor="middle" fill="var(--text-light)">{p.stage.split(' ')[0]}</text>
+            </g>
+          ))}
+        </svg>
+      </div>
+    );
+  };
+
   return (
     <>
       <div className="background-elements">
@@ -77,6 +131,7 @@ export default function Home() {
         <main className="glass-panel">
           {step === 'form' && (
             <form id="namingForm" onSubmit={(e) => e.preventDefault()}>
+              {/* Form Content Omitted for Brevity in logic, exact same as before */}
               <div className="form-row">
                 <div className="form-group">
                   <label htmlFor="firstName">Intended English Name</label>
@@ -132,7 +187,7 @@ export default function Home() {
                 </div>
                 
                 <div style={{ position: 'relative', zIndex: 10 }}>
-                  <PayPalScriptProvider options={{ "client-id": "test", currency: "USD", intent: "capture" }}>
+                  <PayPalScriptProvider options={{ "client-id": "AZjtN3-Erdz5rGDcBoj-UKQT4gc5qSkbmw1LXtdvNxua7ibRJN8dgWbjh-sEQyoc2KN2QdOQCMZC20-t", currency: "USD", intent: "capture" }}>
                     <PayPalButtons 
                       style={{ layout: "vertical", shape: "pill", color: "gold", height: 45 }}
                       createOrder={(data, actions) => {
@@ -194,12 +249,42 @@ export default function Home() {
                   <div className={`element ${resultData.sajuAnalysis.metal > 2 ? 'highlight' : ''}`}><span className="icon">⚔️</span><span className="name">Metal</span><span className="count">{resultData.sajuAnalysis.metal}</span></div>
                   <div className={`element ${resultData.sajuAnalysis.water > 2 ? 'highlight' : ''}`}><span className="icon">💧</span><span className="name">Water</span><span className="count">{resultData.sajuAnalysis.water}</span></div>
                 </div>
-                <p className="saju-desc">
+                <p className="saju-desc-summary">
                   {resultData.sajuAnalysis.description}
                 </p>
+                
+                <div className="saju-details">
+                  <div className="saju-detail-card">
+                    <h4>🤝 Personality & Social Dynamics</h4>
+                    <p>{resultData.sajuAnalysis.details.personality}</p>
+                  </div>
+                  <div className="saju-detail-card">
+                    <h4>💼 Academics & Career Fortune</h4>
+                    <p>{resultData.sajuAnalysis.details.career}</p>
+                  </div>
+                  <div className="saju-detail-card">
+                    <h4>💎 Financial Capability & Wealth</h4>
+                    <p>{resultData.sajuAnalysis.details.wealth}</p>
+                  </div>
+                  <div className="saju-detail-card">
+                    <h4>🌊 Life's Natural Rhythm</h4>
+                    <p>{resultData.sajuAnalysis.details.lifeRhythm}</p>
+                  </div>
+                  <div className="saju-detail-card">
+                    <h4>👨‍👩‍👧 Relationship with Parents</h4>
+                    <p>{resultData.sajuAnalysis.details.parents}</p>
+                  </div>
+                </div>
+
+                <div className="parenting-tip-box">
+                  <h4>✨ Future-Oriented Parenting Tip</h4>
+                  <p>{resultData.sajuAnalysis.parentingTip}</p>
+                </div>
               </div>
+
+              {renderLifeGraph(resultData.lifeGraph)}
               
-              <p className="instruction-text">✨ Click on a name to reveal the destiny breakdown!</p>
+              <p className="instruction-text">✨ Click on a name to see how it shapes their destiny!</p>
 
               <div className="name-recommendations">
                 {resultData.names.map((nameData, index) => {
@@ -219,18 +304,14 @@ export default function Home() {
                       {expandedCard !== rank && <p className="click-hint">Tap to see destiny details ▾</p>}
                       
                       {expandedCard === rank && (
-                        <div className="expanded-details">
+                        <div className="expanded-details storytelling-details">
                           <div className="detail-item">
-                            <h4>💼 Ideal Career Path</h4>
-                            <p>{nameData.career}</p>
+                            <h4>⚖️ Destiny Compensation Story</h4>
+                            <p>{nameData.compensationStory}</p>
                           </div>
                           <div className="detail-item">
-                            <h4>🌍 Best Places to Live</h4>
-                            <p>{nameData.location}</p>
-                          </div>
-                          <div className="detail-item">
-                            <h4>❤️ Romantic Compatibility</h4>
-                            <p>{nameData.compatibility}</p>
+                            <h4>🚀 Maximized Abilities</h4>
+                            <p>{nameData.maximizedAbilities}</p>
                           </div>
                         </div>
                       )}

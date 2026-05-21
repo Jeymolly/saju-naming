@@ -30,17 +30,30 @@ Respond ONLY with a JSON object in the exact following structure, with no markdo
     "earth": <number 0-4>,
     "metal": <number 0-4>,
     "water": <number 0-4>,
-    "description": "A 2-3 sentence English description of their Saju based on the birth data. Mention their dominant element, what they lack, and how the Korean name will balance it to harmonize with their English name."
+    "description": "A 1-2 sentence high-level summary of their Saju.",
+    "details": {
+      "personality": "Detailed insight on Personality & Social Dynamics (max 5 lines).",
+      "career": "Detailed insight on Academics & Career Fortune (max 5 lines).",
+      "wealth": "Detailed insight on Financial Capability & Wealth (max 5 lines).",
+      "lifeRhythm": "Detailed insight on Life's Natural Rhythm (Ups & Downs) (max 5 lines).",
+      "parents": "Detailed insight on Relationship with Parents (max 5 lines)."
+    },
+    "parentingTip": "A future-oriented parenting tip based on their Saju elements."
   },
+  "lifeGraph": [
+    { "stage": "Youth (0-20)", "score": <number 1-100> },
+    { "stage": "Adulthood (21-40)", "score": <number 1-100> },
+    { "stage": "Prime (41-60)", "score": <number 1-100> },
+    { "stage": "Elderly (60+)", "score": <number 1-100> }
+  ],
   "names": [
     {
       "pronunciation": "E.g., Seo-Ah",
       "hangul": "서아",
       "hanja": "E.g., 瑞 (Auspicious) 雅 (Elegant)",
       "meaning": "Meaning explanation in English...",
-      "career": "Ideal career path explanation...",
-      "location": "Ideal living location explanation...",
-      "compatibility": "Romantic compatibility explanation..."
+      "compensationStory": "Storytelling on how this specific name balances their Saju deficiencies and connects with their destiny...",
+      "maximizedAbilities": "Specific abilities or traits this name will maximize (e.g., Enhances leadership and resilience)."
     }
   ]
 }

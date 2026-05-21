@@ -524,3 +524,96 @@ input:focus, select:focus {
 .disclaimer-box strong {
     color: var(--text-main);
 }
+
+.saju-desc-summary {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--text-main);
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+.saju-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.saju-detail-card {
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
+    padding: 15px;
+    border: 1px solid rgba(212, 163, 115, 0.3);
+}
+
+.saju-detail-card h4 {
+    font-size: 0.95rem;
+    color: var(--text-main);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+}
+
+.saju-detail-card p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--text-light);
+}
+
+.parenting-tip-box {
+    background: rgba(212, 163, 115, 0.15);
+    border-radius: 12px;
+    padding: 15px;
+    border-left: 4px solid var(--secondary-color);
+}
+
+.parenting-tip-box h4 {
+    color: var(--secondary-color);
+    margin-bottom: 5px;
+    font-size: 0.95rem;
+}
+
+.parenting-tip-box p {
+    font-size: 0.9rem;
+    color: var(--text-main);
+    line-height: 1.5;
+}
+
+.life-graph-container {
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 25px;
+    border: 1px solid rgba(212, 163, 115, 0.2);
+    text-align: center;
+}
+
+.life-graph-container h3 {
+    font-size: 1.3rem;
+    margin-bottom: 5px;
+    color: var(--text-main);
+}
+
+.life-graph-desc {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-bottom: 15px;
+}
+
+.life-graph-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 12px;
+    padding: 10px 0;
+}
+
+.storytelling-details .detail-item p {
+    padding-left: 0;
+    margin-top: 5px;
+    font-style: italic;
+    color: var(--text-main);
+}
