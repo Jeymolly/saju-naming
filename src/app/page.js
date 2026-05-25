@@ -287,38 +287,28 @@ export default function Home() {
                 </button>
                 <div className="or-divider">OR</div>
                 <div style={{ position: 'relative', zIndex: 10 }}>
-                  <button 
-                    type="button"
-                    onClick={(e) => {
-                      if (!formData.firstName || !formData.lastName || !formData.birthDate) {
-                        setErrorMessage("모든 필수 칸(이름, 생년월일)을 입력하지 않으면 결과를 확인할 수 없습니다.");
-                        return;
-                      }
-                      setErrorMessage("");
-                      handlePaymentSuccess(false);
-                    }}
-                    style={{ 
-                      width: '100%', background: '#FFC439', color: '#000', border: 'none', borderRadius: '25px', padding: '12px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '45px'
-                    }}
-                  >
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" style={{ height: '24px' }} />
-                  </button>
-                  <div style={{ display: 'none' }}>
-                    <PayPalScriptProvider options={{ "client-id": "test", currency: "USD", intent: "capture" }}>
-                      <PayPalButtons 
-                        style={{ layout: "vertical", shape: "pill", color: "gold", height: 45 }}
-                        createOrder={(data, actions) => {
-                          return actions.order.create({
-                            purchase_units: [{ description: "Premium AI Saju Naming Analysis", amount: { value: "2.99" } }],
-                          });
-                        }}
-                        onApprove={async (data, actions) => {
-                          const details = await actions.order.capture();
-                          handlePaymentSuccess(false);
-                        }}
-                      />
-                    </PayPalScriptProvider>
-                  </div>
+                  <PayPalScriptProvider options={{ "client-id": "AZjtN3-Erdz5rGDcBoj-UKQT4gc5qSkbmw1LXtdvNxua7ibRJN8dgWbjh-sEQyoc2KN2QdOQCMZC20-t", currency: "USD", intent: "capture" }}>
+                    <PayPalButtons 
+                      style={{ layout: "vertical", shape: "pill", color: "gold", height: 45 }}
+                      onClick={(data, actions) => {
+                        if (!formData.firstName || !formData.lastName || !formData.birthDate) {
+                          setErrorMessage("모든 필수 칸(이름, 생년월일)을 입력하지 않으면 결과를 확인할 수 없습니다.");
+                          return actions.reject();
+                        }
+                        setErrorMessage("");
+                        return actions.resolve();
+                      }}
+                      createOrder={(data, actions) => {
+                        return actions.order.create({
+                          purchase_units: [{ description: "Premium AI Saju Naming Analysis", amount: { value: "2.99" } }],
+                        });
+                      }}
+                      onApprove={async (data, actions) => {
+                        const details = await actions.order.capture();
+                        handlePaymentSuccess(false);
+                      }}
+                    />
+                  </PayPalScriptProvider>
                 </div>
                 
                 <p className="secure-text">🔒 Protected by secure payment systems.</p>
@@ -370,14 +360,20 @@ export default function Home() {
                       </div>
                       
                       <div style={{ position: 'relative', zIndex: 10, width: '100%', marginTop: '15px' }}>
-                        <button 
-                          onClick={(e) => { e.preventDefault(); handlePaymentSuccess(false); }} 
-                          style={{ 
-                            width: '100%', background: '#FFC439', color: '#000', border: 'none', borderRadius: '25px', padding: '12px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '45px'
-                          }}
-                        >
-                          <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" style={{ height: '24px' }} />
-                        </button>
+                        <PayPalScriptProvider options={{ "client-id": "AZjtN3-Erdz5rGDcBoj-UKQT4gc5qSkbmw1LXtdvNxua7ibRJN8dgWbjh-sEQyoc2KN2QdOQCMZC20-t", currency: "USD", intent: "capture" }}>
+                          <PayPalButtons 
+                            style={{ layout: "vertical", shape: "pill", color: "gold", height: 45 }}
+                            createOrder={(data, actions) => {
+                              return actions.order.create({
+                                purchase_units: [{ description: "Premium AI Saju Naming Analysis", amount: { value: "2.99" } }],
+                              });
+                            }}
+                            onApprove={async (data, actions) => {
+                              const details = await actions.order.capture();
+                              handlePaymentSuccess(false);
+                            }}
+                          />
+                        </PayPalScriptProvider>
                       </div>
                     </div>
                   </div>
