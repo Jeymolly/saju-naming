@@ -42,21 +42,23 @@ export default function Home() {
   const [expandedCard, setExpandedCard] = useState(null);
   const [resultData, setResultData] = useState(null);
 
+  const [errorMessage, setErrorMessage] = useState("");
+
   // Form State
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     birthDate: '',
     birthTime: '',
-    gender: 'boy',
+    gender: 'female',
     vibe: 'modern'
   });
 
   const handleInputChange = (e) => {
-    const { id, name, value } = e.target;
+    const { id, name, value, type, checked } = e.target;
     setFormData(prev => ({
       ...prev,
-      [id || name]: value
+      [id || name]: type === 'checkbox' ? checked : value
     }));
   };
 
@@ -195,22 +197,36 @@ export default function Home() {
               <div className="form-row">
                 <div className="form-group">
                   <label htmlFor="firstName">First Name / Intended Name</label>
-                  <input type="text" id="firstName" value={formData.firstName} onChange={handleInputChange} placeholder="e.g. Leo" required />
+                  <input type="text" id="firstName" value={formData.firstName} onChange={handleInputChange} placeholder="e.g. Leo" />
                 </div>
                 <div className="form-group">
                   <label htmlFor="lastName">Family Last Name</label>
-                  <input type="text" id="lastName" value={formData.lastName} onChange={handleInputChange} placeholder="e.g. Smith" required />
+                  <input type="text" id="lastName" value={formData.lastName} onChange={handleInputChange} placeholder="e.g. Smith" />
                 </div>
               </div>
 
               <div className="form-row">
                 <div className="form-group">
                   <label htmlFor="birthDate">Birth Date</label>
-                  <input type="date" id="birthDate" value={formData.birthDate} onChange={handleInputChange} required />
+                  <input type="date" id="birthDate" value={formData.birthDate} onChange={handleInputChange} />
                 </div>
                 <div className="form-group">
                   <label htmlFor="birthTime">Birth Time</label>
-                  <input type="time" id="birthTime" value={formData.birthTime} onChange={handleInputChange} required />
+                  <select id="birthTime" value={formData.birthTime} onChange={handleInputChange}>
+                    <option value="">Unknown (I don't know)</option>
+                    <option value="00:30">23:30 ~ 01:29 (Ja-si / 子時 - Rat)</option>
+                    <option value="02:30">01:30 ~ 03:29 (Chuk-si / 丑時 - Ox)</option>
+                    <option value="04:30">03:30 ~ 05:29 (In-si / 寅時 - Tiger)</option>
+                    <option value="06:30">05:30 ~ 07:29 (Myo-si / 卯時 - Rabbit)</option>
+                    <option value="08:30">07:30 ~ 09:29 (Jin-si / 辰時 - Dragon)</option>
+                    <option value="10:30">09:30 ~ 11:29 (Sa-si / 巳時 - Snake)</option>
+                    <option value="12:30">11:30 ~ 13:29 (O-si / 午時 - Horse)</option>
+                    <option value="14:30">13:30 ~ 15:29 (Mi-si / 未時 - Sheep)</option>
+                    <option value="16:30">15:30 ~ 17:29 (Sin-si / 申時 - Monkey)</option>
+                    <option value="18:30">17:30 ~ 19:29 (Yu-si / 酉時 - Rooster)</option>
+                    <option value="20:30">19:30 ~ 21:29 (Sul-si / 戌時 - Dog)</option>
+                    <option value="22:30">21:30 ~ 23:29 (Hae-si / 亥時 - Pig)</option>
+                  </select>
                 </div>
               </div>
 
@@ -218,7 +234,7 @@ export default function Home() {
                 <label>Gender</label>
                 <div className="radio-group">
                   <label className="radio-btn">
-                    <input type="radio" name="gender" value="male" checked={formData.gender === 'male'} onChange={handleInputChange} required /> <span>Male</span>
+                    <input type="radio" name="gender" value="male" checked={formData.gender === 'male'} onChange={handleInputChange} /> <span>Male</span>
                   </label>
                   <label className="radio-btn">
                     <input type="radio" name="gender" value="female" checked={formData.gender === 'female'} onChange={handleInputChange} /> <span>Female</span>
@@ -231,7 +247,7 @@ export default function Home() {
 
               <div className="form-group">
                 <label htmlFor="vibe">Preferred Name Vibe</label>
-                <select id="vibe" value={formData.vibe} onChange={handleInputChange} required>
+                <select id="vibe" value={formData.vibe} onChange={handleInputChange}>
                   <option value="modern">Modern & Trendy</option>
                   <option value="classic">Classic & Noble</option>
                   <option value="soft">Soft & Warm</option>
@@ -241,33 +257,68 @@ export default function Home() {
               </div>
 
               <div className="payment-section">
+                <div style={{ color: '#d32f2f', fontSize: '0.85rem', textAlign: 'center', marginBottom: '15px' }}>
+                  * You cannot see the results unless all required fields are filled.
+                </div>
+                {errorMessage && (
+                  <div style={{ color: '#d32f2f', fontSize: '0.9rem', textAlign: 'center', marginBottom: '15px', fontWeight: 'bold' }}>
+                    {errorMessage}
+                  </div>
+                )}
+                
                 <div className="price-info">
                   <span className="price-label">Premium AI Saju Analysis</span>
                   <span className="price-amount">$2.99</span>
                 </div>
                 
                 <button 
-                  onClick={(e) => { e.preventDefault(); handlePaymentSuccess(true); }} 
+                  type="button"
+                  onClick={(e) => {
+                    if (!formData.firstName || !formData.lastName || !formData.birthDate) {
+                      setErrorMessage("모든 필수 칸(이름, 생년월일)을 입력하지 않으면 결과를 확인할 수 없습니다.");
+                      return;
+                    }
+                    setErrorMessage("");
+                    handlePaymentSuccess(true);
+                  }}
                   className="free-reading-btn"
                 >
                   🎁 Get Free Mini Reading
                 </button>
                 <div className="or-divider">OR</div>
                 <div style={{ position: 'relative', zIndex: 10 }}>
-                  <PayPalScriptProvider options={{ "client-id": "AZjtN3-Erdz5rGDcBoj-UKQT4gc5qSkbmw1LXtdvNxua7ibRJN8dgWbjh-sEQyoc2KN2QdOQCMZC20-t", currency: "USD", intent: "capture" }}>
-                    <PayPalButtons 
-                      style={{ layout: "vertical", shape: "pill", color: "gold", height: 45 }}
-                      createOrder={(data, actions) => {
-                        return actions.order.create({
-                          purchase_units: [{ description: "Premium AI Saju Naming Analysis", amount: { value: "2.99" } }],
-                        });
-                      }}
-                      onApprove={async (data, actions) => {
-                        const details = await actions.order.capture();
-                        handlePaymentSuccess(false);
-                      }}
-                    />
-                  </PayPalScriptProvider>
+                  <button 
+                    type="button"
+                    onClick={(e) => {
+                      if (!formData.firstName || !formData.lastName || !formData.birthDate) {
+                        setErrorMessage("모든 필수 칸(이름, 생년월일)을 입력하지 않으면 결과를 확인할 수 없습니다.");
+                        return;
+                      }
+                      setErrorMessage("");
+                      handlePaymentSuccess(false);
+                    }}
+                    style={{ 
+                      width: '100%', background: '#FFC439', color: '#000', border: 'none', borderRadius: '25px', padding: '12px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '45px'
+                    }}
+                  >
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" style={{ height: '24px' }} />
+                  </button>
+                  <div style={{ display: 'none' }}>
+                    <PayPalScriptProvider options={{ "client-id": "test", currency: "USD", intent: "capture" }}>
+                      <PayPalButtons 
+                        style={{ layout: "vertical", shape: "pill", color: "gold", height: 45 }}
+                        createOrder={(data, actions) => {
+                          return actions.order.create({
+                            purchase_units: [{ description: "Premium AI Saju Naming Analysis", amount: { value: "2.99" } }],
+                          });
+                        }}
+                        onApprove={async (data, actions) => {
+                          const details = await actions.order.capture();
+                          handlePaymentSuccess(false);
+                        }}
+                      />
+                    </PayPalScriptProvider>
+                  </div>
                 </div>
                 
                 <p className="secure-text">🔒 Protected by secure payment systems.</p>
@@ -319,20 +370,14 @@ export default function Home() {
                       </div>
                       
                       <div style={{ position: 'relative', zIndex: 10, width: '100%', marginTop: '15px' }}>
-                        <PayPalScriptProvider options={{ "client-id": "AZjtN3-Erdz5rGDcBoj-UKQT4gc5qSkbmw1LXtdvNxua7ibRJN8dgWbjh-sEQyoc2KN2QdOQCMZC20-t", currency: "USD", intent: "capture" }}>
-                          <PayPalButtons 
-                            style={{ layout: "vertical", shape: "pill", color: "gold", height: 45 }}
-                            createOrder={(data, actions) => {
-                              return actions.order.create({
-                                purchase_units: [{ description: "Premium AI Saju Naming Analysis", amount: { value: "2.99" } }],
-                              });
-                            }}
-                            onApprove={async (data, actions) => {
-                              const details = await actions.order.capture();
-                              handlePaymentSuccess(false);
-                            }}
-                          />
-                        </PayPalScriptProvider>
+                        <button 
+                          onClick={(e) => { e.preventDefault(); handlePaymentSuccess(false); }} 
+                          style={{ 
+                            width: '100%', background: '#FFC439', color: '#000', border: 'none', borderRadius: '25px', padding: '12px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '45px'
+                          }}
+                        >
+                          <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" style={{ height: '24px' }} />
+                        </button>
                       </div>
                     </div>
                   </div>

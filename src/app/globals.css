@@ -690,3 +690,25 @@ input:focus, select:focus {
     line-height: 1.5;
     margin-bottom: 20px;
 }
+
+/* Mobile Optimization */
+@media (max-width: 600px) {
+    .container {
+        padding: 20px;
+        margin-top: 15px;
+    }
+    
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .form-group {
+        margin-bottom: 15px;
+    }
+    
+    .radio-group {
+        flex-direction: column;
+        gap: 8px;
+    }
+}
