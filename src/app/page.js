@@ -1,6 +1,41 @@
 'use client';
 import { useState } from 'react';
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import html2canvas from 'html2canvas';
+
+const Leaf = ({ x, y, rot }) => (
+  <path 
+    d={`M${x} ${y} C${x-3} ${y-6} ${x-3.5} ${y-12} ${x} ${y-16} C${x+3.5} ${y-12} ${x+3} ${y-6} ${x} ${y}Z`} 
+    transform={`rotate(${rot}, ${x}, ${y})`} 
+  />
+);
+
+const GoldLeaf = ({ flip }) => (
+  <svg 
+    width="50" height="110" 
+    viewBox="0 0 40 70" 
+    fill="var(--gold)" 
+    stroke="var(--gold)" 
+    strokeWidth="1" 
+    strokeLinejoin="round"
+    style={{ transform: flip ? 'scaleX(-1)' : 'none', margin: '0 5px', opacity: 0.85 }}
+  >
+    <path d="M10 65 Q 35 35 25 5" fill="none" strokeWidth="2" />
+    <Leaf x={25} y={5} rot={20} />
+    
+    <Leaf x={26.5} y={17} rot={-35} />
+    <Leaf x={28.5} y={17} rot={55} />
+    
+    <Leaf x={26.5} y={29} rot={-40} />
+    <Leaf x={28.5} y={29} rot={60} />
+    
+    <Leaf x={23.5} y={41} rot={-45} />
+    <Leaf x={25.5} y={41} rot={65} />
+    
+    <Leaf x={17.5} y={53} rot={-50} />
+    <Leaf x={20} y={53} rot={70} />
+  </svg>
+);
 
 export default function Home() {
   const [step, setStep] = useState('form'); // 'form', 'loading', 'result'
@@ -25,20 +60,20 @@ export default function Home() {
     }));
   };
 
-  const handlePaymentSuccess = async () => {
+  const handlePaymentSuccess = async (isFree = false) => {
     setStep('loading');
     
     try {
       const response = await fetch('/api/generate-name', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({ ...formData, isFree })
       });
       
       const data = await response.json();
       
-      if(data.sajuAnalysis && data.names) {
-        setResultData(data);
+      if(data.sajuAnalysis) {
+        setResultData({ ...data, isFree });
         setStep('result');
       } else {
         alert("Failed to generate names. Please try again.");
@@ -59,6 +94,23 @@ export default function Home() {
 
   const toggleDetails = (rank) => {
     setExpandedCard(expandedCard === rank ? null : rank);
+  };
+
+  const handleSaveImage = async () => {
+    const element = document.getElementById('resultContent');
+    if (!element) return;
+    
+    try {
+      const canvas = await html2canvas(element, { scale: 2, useCORS: true, backgroundColor: '#FAFAFA' });
+      const image = canvas.toDataURL("image/png");
+      const link = document.createElement('a');
+      link.href = image;
+      link.download = `Saju_Analysis_${formData.firstName || 'My'}.png`;
+      link.click();
+    } catch (err) {
+      console.error("Failed to save image", err);
+      alert("Failed to save image. Please try again.");
+    }
   };
 
   // Helper function to draw the SVG Life Graph
@@ -124,8 +176,16 @@ export default function Home() {
 
       <div className="container">
         <header>
-          <h1>Saju Baby Naming</h1>
-          <p>Discover your child's perfect Korean name through ancient Eastern astrology and modern AI</p>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '10px' }}>
+            <GoldLeaf flip={true} />
+            <h1 style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', margin: 0 }}>
+              <span>Korean Fortune</span>
+              <span style={{ fontSize: '0.6em', color: 'var(--secondary-color)', margin: '-8px 0' }}>&</span>
+              <span>Name Studio</span>
+            </h1>
+            <GoldLeaf flip={false} />
+          </div>
+          <p>Discover your true inner value through the ancient Korean Life Code and find a Talisman Name that brings good fortune to your future.</p>
         </header>
 
         <main className="glass-panel">
@@ -134,7 +194,7 @@ export default function Home() {
               {/* Form Content Omitted for Brevity in logic, exact same as before */}
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="firstName">Intended English Name</label>
+                  <label htmlFor="firstName">First Name / Intended Name</label>
                   <input type="text" id="firstName" value={formData.firstName} onChange={handleInputChange} placeholder="e.g. Leo" required />
                 </div>
                 <div className="form-group">
@@ -145,23 +205,23 @@ export default function Home() {
 
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="birthDate">Expected Birth Date</label>
+                  <label htmlFor="birthDate">Birth Date</label>
                   <input type="date" id="birthDate" value={formData.birthDate} onChange={handleInputChange} required />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="birthTime">Expected Birth Time</label>
+                  <label htmlFor="birthTime">Birth Time</label>
                   <input type="time" id="birthTime" value={formData.birthTime} onChange={handleInputChange} required />
                 </div>
               </div>
 
               <div className="form-group">
-                <label>Baby's Gender</label>
+                <label>Gender</label>
                 <div className="radio-group">
                   <label className="radio-btn">
-                    <input type="radio" name="gender" value="boy" checked={formData.gender === 'boy'} onChange={handleInputChange} required /> <span>Boy</span>
+                    <input type="radio" name="gender" value="male" checked={formData.gender === 'male'} onChange={handleInputChange} required /> <span>Male</span>
                   </label>
                   <label className="radio-btn">
-                    <input type="radio" name="gender" value="girl" checked={formData.gender === 'girl'} onChange={handleInputChange} /> <span>Girl</span>
+                    <input type="radio" name="gender" value="female" checked={formData.gender === 'female'} onChange={handleInputChange} /> <span>Female</span>
                   </label>
                   <label className="radio-btn">
                     <input type="radio" name="gender" value="unknown" checked={formData.gender === 'unknown'} onChange={handleInputChange} /> <span>Surprise me</span>
@@ -186,30 +246,25 @@ export default function Home() {
                   <span className="price-amount">$2.99</span>
                 </div>
                 
+                <button 
+                  onClick={(e) => { e.preventDefault(); handlePaymentSuccess(true); }} 
+                  className="free-reading-btn"
+                >
+                  🎁 Get Free Mini Reading
+                </button>
+                <div className="or-divider">OR</div>
                 <div style={{ position: 'relative', zIndex: 10 }}>
                   <PayPalScriptProvider options={{ "client-id": "AZjtN3-Erdz5rGDcBoj-UKQT4gc5qSkbmw1LXtdvNxua7ibRJN8dgWbjh-sEQyoc2KN2QdOQCMZC20-t", currency: "USD", intent: "capture" }}>
                     <PayPalButtons 
                       style={{ layout: "vertical", shape: "pill", color: "gold", height: 45 }}
                       createOrder={(data, actions) => {
                         return actions.order.create({
-                          purchase_units: [
-                            {
-                              description: "Premium AI Saju Naming Analysis",
-                              amount: {
-                                value: "2.99",
-                              },
-                            },
-                          ],
+                          purchase_units: [{ description: "Premium AI Saju Naming Analysis", amount: { value: "2.99" } }],
                         });
                       }}
                       onApprove={async (data, actions) => {
                         const details = await actions.order.capture();
-                        console.log("Transaction completed by " + details.payer.name.given_name);
-                        handlePaymentSuccess();
-                      }}
-                      onError={(err) => {
-                        console.error("PayPal Checkout onError", err);
-                        alert("Payment could not be processed. Please try again.");
+                        handlePaymentSuccess(false);
                       }}
                     />
                   </PayPalScriptProvider>
@@ -252,75 +307,118 @@ export default function Home() {
                 <p className="saju-desc-summary">
                   {resultData.sajuAnalysis.description}
                 </p>
-                
-                <div className="saju-details">
-                  <div className="saju-detail-card">
-                    <h4>🤝 Personality & Social Dynamics</h4>
-                    <p>{resultData.sajuAnalysis.details.personality}</p>
-                  </div>
-                  <div className="saju-detail-card">
-                    <h4>💼 Academics & Career Fortune</h4>
-                    <p>{resultData.sajuAnalysis.details.career}</p>
-                  </div>
-                  <div className="saju-detail-card">
-                    <h4>💎 Financial Capability & Wealth</h4>
-                    <p>{resultData.sajuAnalysis.details.wealth}</p>
-                  </div>
-                  <div className="saju-detail-card">
-                    <h4>🌊 Life's Natural Rhythm</h4>
-                    <p>{resultData.sajuAnalysis.details.lifeRhythm}</p>
-                  </div>
-                  <div className="saju-detail-card">
-                    <h4>👨‍👩‍👧 Relationship with Parents</h4>
-                    <p>{resultData.sajuAnalysis.details.parents}</p>
-                  </div>
-                </div>
-
-                <div className="parenting-tip-box">
-                  <h4>✨ Future-Oriented Parenting Tip</h4>
-                  <p>{resultData.sajuAnalysis.parentingTip}</p>
-                </div>
-              </div>
-
-              {renderLifeGraph(resultData.lifeGraph)}
-              
-              <p className="instruction-text">✨ Click on a name to see how it shapes their destiny!</p>
-
-              <div className="name-recommendations">
-                {resultData.names.map((nameData, index) => {
-                  const rankClasses = ['rank-1', 'rank-2', 'rank-3'];
-                  const rankBadges = ['🥇 1st Choice', '🥈 2nd Choice', '🥉 3rd Choice'];
-                  const rank = index + 1;
-                  
-                  return (
-                    <div key={index} className={`name-card ${rankClasses[index]}`} onClick={() => toggleDetails(rank)}>
-                      <div className="rank-badge">{rankBadges[index]}</div>
-                      <div className="name-header">
-                        <h3 className="pronunciation">{nameData.pronunciation}</h3>
-                        <span className="korean-name">{nameData.hangul}</span>
-                      </div>
-                      <p className="hanja">{nameData.hanja}</p>
-                      <p className="meaning">{nameData.meaning}</p>
-                      {expandedCard !== rank && <p className="click-hint">Tap to see destiny details ▾</p>}
+                {resultData.isFree && (
+                  <div className="premium-upsell-container">
+                    <div className="premium-upsell-overlay">
+                      <h3>🔒 Unlock Your Destiny</h3>
+                      <p>Discover your perfectly balanced Korean Talisman Names, full personality analysis, and Lifetime Fortune Graph!</p>
                       
-                      {expandedCard === rank && (
-                        <div className="expanded-details storytelling-details">
-                          <div className="detail-item">
-                            <h4>⚖️ Destiny Compensation Story</h4>
-                            <p>{nameData.compensationStory}</p>
-                          </div>
-                          <div className="detail-item">
-                            <h4>🚀 Maximized Abilities</h4>
-                            <p>{nameData.maximizedAbilities}</p>
-                          </div>
-                        </div>
-                      )}
+                      <div className="price-info" style={{ marginTop: '15px' }}>
+                        <span className="price-label">Premium Upgrade</span>
+                        <span className="price-amount">$2.99</span>
+                      </div>
+                      
+                      <div style={{ position: 'relative', zIndex: 10, width: '100%', marginTop: '15px' }}>
+                        <PayPalScriptProvider options={{ "client-id": "AZjtN3-Erdz5rGDcBoj-UKQT4gc5qSkbmw1LXtdvNxua7ibRJN8dgWbjh-sEQyoc2KN2QdOQCMZC20-t", currency: "USD", intent: "capture" }}>
+                          <PayPalButtons 
+                            style={{ layout: "vertical", shape: "pill", color: "gold", height: 45 }}
+                            createOrder={(data, actions) => {
+                              return actions.order.create({
+                                purchase_units: [{ description: "Premium AI Saju Naming Analysis", amount: { value: "2.99" } }],
+                              });
+                            }}
+                            onApprove={async (data, actions) => {
+                              const details = await actions.order.capture();
+                              handlePaymentSuccess(false);
+                            }}
+                          />
+                        </PayPalScriptProvider>
+                      </div>
                     </div>
-                  );
-                })}
+                  </div>
+                )}
+                
+                {!resultData.isFree && (
+                  <>
+                    <div className="saju-details">
+                      <div className="saju-detail-card">
+                        <h4>🤝 Personality & Inner Self</h4>
+                        <p>{resultData.sajuAnalysis.details.personality}</p>
+                      </div>
+                      <div className="saju-detail-card">
+                        <h4>💼 Academics, Career & Success</h4>
+                        <p>{resultData.sajuAnalysis.details.career}</p>
+                      </div>
+                      <div className="saju-detail-card">
+                        <h4>💎 Financial Capability & Wealth</h4>
+                        <p>{resultData.sajuAnalysis.details.wealth}</p>
+                      </div>
+                      <div className="saju-detail-card">
+                        <h4>🌊 Life's Natural Rhythm</h4>
+                        <p>{resultData.sajuAnalysis.details.lifeRhythm}</p>
+                      </div>
+                      <div className="saju-detail-card">
+                        <h4>👨‍👩‍👧 Relationship with Family</h4>
+                        <p>{resultData.sajuAnalysis.details.parents}</p>
+                      </div>
+                    </div>
+
+                    <div className="parenting-tip-box">
+                      <h4>✨ Destiny & Fortune Guide</h4>
+                      <p>{resultData.sajuAnalysis.destinyGuide}</p>
+                    </div>
+                  </>
+                )}
               </div>
 
-              <button className="retry-btn" onClick={resetForm}>Start Over</button>
+              {!resultData.isFree && (
+                <>
+                  {renderLifeGraph(resultData.lifeGraph)}
+                  
+                  <p className="instruction-text">✨ Click on a name to see how it shapes your destiny!</p>
+
+                  <div className="name-recommendations">
+                    {resultData.names.map((nameData, index) => {
+                      const rankClasses = ['rank-1', 'rank-2', 'rank-3'];
+                      const rankBadges = ['🥇 1st Choice', '🥈 2nd Choice', '🥉 3rd Choice'];
+                      const rank = index + 1;
+                      
+                      return (
+                        <div key={index} className={`name-card ${rankClasses[index]}`} onClick={() => toggleDetails(rank)}>
+                          <div className="rank-badge">{rankBadges[index]}</div>
+                          <div className="name-header">
+                            <h3 className="pronunciation">{nameData.pronunciation}</h3>
+                            <span className="korean-name">{nameData.hangul}</span>
+                          </div>
+                          <p className="hanja">{nameData.hanja}</p>
+                          <p className="meaning">{nameData.meaning}</p>
+                          {expandedCard !== rank && <p className="click-hint">Tap to see destiny details ▾</p>}
+                          
+                          {expandedCard === rank && (
+                            <div className="expanded-details storytelling-details">
+                              <div className="detail-item">
+                                <h4>⚖️ Destiny Compensation Story</h4>
+                                <p>{nameData.compensationStory}</p>
+                              </div>
+                              <div className="detail-item">
+                                <h4>🚀 Maximized Abilities</h4>
+                                <p>{nameData.maximizedAbilities}</p>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '20px' }}>
+                <button className="retry-btn" style={{ background: '#4CAF50', color: 'white', border: 'none' }} onClick={handleSaveImage}>
+                  📸 Save Result as Image
+                </button>
+                <button className="retry-btn" onClick={resetForm}>Start Over</button>
+              </div>
             </div>
           )}
         </main>
